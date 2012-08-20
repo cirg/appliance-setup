@@ -1,3 +1,6 @@
 [submodule "puppet/modules/java"]
 	path = puppet/modules/java
 	url = https://github.com/cirg/puppetlabs-java.git
+[submodule "puppet/modules/stdlib"]
+	path = puppet/modules/stdlib
+	url = https://github.com/cirg/puppetlabs-stdlib.git
