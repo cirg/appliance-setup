@@ -41,7 +41,9 @@ puppet)
 	run_puppet_apply "$@"
 	;;
 update)
-	git pull
+	git fetch
+	git reset --hard @{u}
+	git submodule update --init
 	;;
 *)
 	echo "Invalid command: $command"
