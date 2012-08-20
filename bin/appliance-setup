@@ -6,3 +6,5 @@ cat <<EOF >/etc/apt/sources.list.d/backports.list
 deb http://us.archive.ubuntu.com/ubuntu lucid-backports main
 deb http://us.archive.ubuntu.com/ubuntu lucid-backports universe
 EOF
+
+apt-get update
