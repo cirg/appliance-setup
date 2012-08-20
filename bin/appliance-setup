@@ -2,13 +2,37 @@
 
 set -e
 
-if ! dpkg-query -W --showformat='${Status}\n' puppet 2>/dev/null | grep -q "install ok installed"; then
-	cat <<EOF >/etc/apt/sources.list.d/backports.list
+install_puppet()
+{
+	if ! dpkg-query -W --showformat='${Status}\n' puppet 2>/dev/null | grep -q "install ok installed"; then
+		cat <<EOF >/etc/apt/sources.list.d/backports.list
 deb http://us.archive.ubuntu.com/ubuntu lucid-backports main
 deb http://us.archive.ubuntu.com/ubuntu lucid-backports universe
 EOF
 
-	apt-get update
+		apt-get update
 
-	apt-get -y install puppet
+		apt-get -y install puppet
+	fi
+}
+
+script_base_dir=$(dirname "$0")
+cd "$script_base_dir"
+
+if [ -n "$1" ]; then
+        command=$1
+	shift
+else
+        command=apply
 fi
+
+case "$command" in
+apply)
+	install_puppet
+	;;
+update)
+	git pull
+	;;
+*)
+	echo "Invalid command: $command"
+esac
