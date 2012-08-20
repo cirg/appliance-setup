@@ -2,11 +2,13 @@
 
 set -e
 
-cat <<EOF >/etc/apt/sources.list.d/backports.list
+if ! dpkg-query -W --showformat='${Status}\n' puppet 2>/dev/null | grep -q "install ok installed"; then
+	cat <<EOF >/etc/apt/sources.list.d/backports.list
 deb http://us.archive.ubuntu.com/ubuntu lucid-backports main
 deb http://us.archive.ubuntu.com/ubuntu lucid-backports universe
 EOF
 
-apt-get update
+	apt-get update
 
-apt-get -y install puppet
+	apt-get -y install puppet
+fi
