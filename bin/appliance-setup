@@ -16,6 +16,12 @@ EOF
 	fi
 }
 
+run_puppet_apply()
+{
+	cd puppet
+	puppet apply --modulepath=modules site.pp "$@"
+}
+
 script_base_dir=$(dirname "$0")
 cd "$script_base_dir"
 
@@ -29,6 +35,10 @@ fi
 case "$command" in
 apply)
 	install_puppet
+	run_puppet_apply
+	;;
+puppet)
+	run_puppet_apply "$@"
 	;;
 update)
 	git pull
