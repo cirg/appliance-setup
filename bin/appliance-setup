@@ -22,7 +22,7 @@ run_puppet_apply()
 	puppet apply --modulepath=modules site.pp "$@"
 }
 
-script_base_dir=$(dirname "$0")
+script_base_dir=$(cd "$(dirname "$0")"/.. && pwd)
 cd "$script_base_dir"
 
 if [ -n "$1" ]; then
