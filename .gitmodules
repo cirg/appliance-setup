@@ -10,3 +10,6 @@
 [submodule "puppet/modules/apt"]
 	path = puppet/modules/apt
 	url = https://github.com/cirg/puppetlabs-apt.git
+[submodule "puppet/modules/openmrs"]
+	path = puppet/modules/openmrs
+	url = https://github.com/cirg/puppet-openmrs.git
