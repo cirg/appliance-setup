@@ -6,7 +6,7 @@
 	url = https://github.com/cirg/puppetlabs-stdlib.git
 [submodule "puppet/modules/mysql"]
 	path = puppet/modules/mysql
-	url = https://github.com/puppetlabs/puppetlabs-mysql.git
+	url = https://github.com/cirg/puppetlabs-mysql.git
 [submodule "puppet/modules/apt"]
 	path = puppet/modules/apt
 	url = https://github.com/cirg/puppetlabs-apt.git
