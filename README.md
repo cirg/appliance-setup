@@ -8,7 +8,7 @@ Appliance Setup
 2) Clone appliance-setup repo to /opt/appliance-setup
 
     git clone --recursive \
-        https://github.com/cirg/appliance-setup.git
+        https://github.com/cirg/appliance-setup.git \
         /opt/appliance-setup
 
 3) Run setup
