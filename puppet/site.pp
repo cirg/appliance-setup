@@ -30,7 +30,9 @@ node default {
 
   class { 'apache': }
   class { 'java': }
-  class { 'mysql::server': }
+  class { 'mysql::server':
+    config_hash => { 'root_password' => 'UP9aeKas' }
+  }
   class { 'openmrs': }
   class { 'tomcat': }
 
