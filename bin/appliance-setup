@@ -30,7 +30,7 @@ EOF
 run_puppet_apply()
 {
 	cd puppet
-	puppet apply --modulepath=modules site.pp "$@"
+	puppet apply --modulepath=modules --color=false site.pp "$@"
 }
 
 script_base_dir=$(cd "$(dirname "$0")"/.. && pwd)
