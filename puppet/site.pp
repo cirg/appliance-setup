@@ -31,6 +31,7 @@ node default {
   class { 'apache': }
   class { 'java': }
   class { 'mysql::server': }
+  class { 'openmrs': }
   class { 'tomcat': }
 
   # Additional packages to install
