@@ -2,6 +2,17 @@
 
 set -e
 
+usage()
+{
+cat <<EOF >&2
+usage: $0 <command>
+
+Commands
+apply:  configure the appliance
+update: fetch the latest configuration
+EOF
+}
+
 install_puppet()
 {
 	if ! dpkg-query -W --showformat='${Status}\n' puppet 2>/dev/null | grep -q "install ok installed"; then
@@ -36,6 +47,9 @@ case "$command" in
 apply)
 	install_puppet
 	run_puppet_apply
+	;;
+help)
+	usage
 	;;
 puppet)
 	run_puppet_apply "$@"
