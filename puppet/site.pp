@@ -33,7 +33,6 @@ node default {
   class { 'mysql::server':
     config_hash => { 'root_password' => 'UP9aeKas' }
   }
-  class { 'openmrs': }
   class { 'tomcat': }
 
   # Additional packages to install
