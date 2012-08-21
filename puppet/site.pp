@@ -19,6 +19,13 @@ if ! $::osfamily {
 }
 
 node default {
+  apt::source { "ubuntu-partner":
+    location    => "http://archive.canonical.com/",
+    release     => "lucid",
+    repos       => "partner",
+    include_src => true
+  }
+
   class { 'apache': }
   class { 'mysql::server': }
   class { 'tomcat': }
