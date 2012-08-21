@@ -19,6 +19,8 @@ if ! $::osfamily {
 }
 
 node default {
+  class { 'apt::backports': }
+
   apt::source { "ubuntu-partner":
     location    => "http://archive.canonical.com/",
     release     => "lucid",
