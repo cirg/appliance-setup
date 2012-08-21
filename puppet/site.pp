@@ -29,6 +29,7 @@ node default {
   }
 
   class { 'apache': }
+  class { 'java': }
   class { 'mysql::server': }
   class { 'tomcat': }
 
