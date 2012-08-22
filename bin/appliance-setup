@@ -35,6 +35,12 @@ run_puppet_apply()
 	puppet apply --modulepath=modules --color=false site.pp "$@"
 }
 
+print_version()
+{
+	git describe --dirty --long --always
+}
+
+
 script_base_dir=$(cd "$(dirname "$0")"/.. && pwd)
 cd "$script_base_dir"
 
@@ -62,7 +68,7 @@ update)
 	git submodule update --init
 	;;
 version)
-	git describe --dirty --long --always
+	print_version
 	;;
 *)
 	echo "Invalid command: $command"
