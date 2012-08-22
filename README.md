@@ -13,4 +13,4 @@ Appliance Setup
 
 3) Run setup
 
-    /opt/appliance-setup/bin/appliance-setup
+    /opt/appliance-setup/bin/appliance-setup apply
