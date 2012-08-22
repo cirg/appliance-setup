@@ -55,6 +55,7 @@ case "$command" in
 apply)
 	install_puppet
 	run_puppet_apply
+	print_version > /etc/appliance-setup-version
 	;;
 help)
 	usage
