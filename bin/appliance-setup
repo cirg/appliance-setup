@@ -30,7 +30,7 @@ EOF
 	fi
 
 	# Install the latest version of Puppet
-	apt-get -y install puppet
+	apt-get -y install facter puppet
 }
 
 run_puppet_apply()
