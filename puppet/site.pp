@@ -2,9 +2,7 @@ node default {
   include appliance-components::apache
 
   class { 'java': }
-  class { 'mysql::server':
-    config_hash => { 'root_password' => 'UP9aeKas' }
-  }
+  include appliance-components::mysql
   class { 'tomcat': }
 
   # Additional packages to install
