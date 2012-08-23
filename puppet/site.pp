@@ -28,7 +28,6 @@ node default {
     include_src => true
   }
 
-  class { 'apache': }
   class { 'java': }
   class { 'mysql::server':
     config_hash => { 'root_password' => 'UP9aeKas' }
