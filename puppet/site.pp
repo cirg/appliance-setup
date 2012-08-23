@@ -1,13 +1,4 @@
 node default {
-  class { 'apt::backports': }
-
-  apt::source { "ubuntu-partner":
-    location    => "http://archive.canonical.com/",
-    release     => "lucid",
-    repos       => "partner",
-    include_src => true
-  }
-
   class { 'apache': }
   class { 'apache::mod::ssl': }
   class { 'java': }
