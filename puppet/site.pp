@@ -1,7 +1,7 @@
 node default {
   include appliance-components::apache
 
-  class { 'java': }
+  include appliance-components::java
   include appliance-components::mysql
   include appliance-components::tomcat
 
