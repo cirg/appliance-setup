@@ -17,7 +17,9 @@ EOF
 
 install_puppet()
 {
-	if ! dpkg-query -W --showformat='${Status}\n' puppet 2>/dev/null | grep -q "install ok installed"; then
+	# Add the Puppetlabs package repository
+	# http://docs.puppetlabs.com/guides/puppetlabs_package_repositories.html#for-debian-and-ubuntu
+	if ! [ -f /etc/apt/sources.list.d/puppet.list ]; then
 		cat <<EOF >/etc/apt/sources.list.d/puppet.list
 deb http://apt.puppetlabs.com/ lucid main
 deb-src http://apt.puppetlabs.com/ lucid main
@@ -25,9 +27,10 @@ EOF
 
 		apt-key adv --keyserver keyserver.ubuntu.com --recv 4BD6EC30
 		apt-get update
-
-		apt-get -y install puppet
 	fi
+
+	# Install the latest version of Puppet
+	apt-get -y install puppet
 }
 
 run_puppet_apply()
