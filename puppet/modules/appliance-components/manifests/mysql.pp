@@ -1,5 +1,5 @@
 class appliance-components::mysql {
-  class { 'mysql::server':
+  class { '::mysql::server':
     config_hash => { 'root_password' => 'UP9aeKas' }
   }
 }

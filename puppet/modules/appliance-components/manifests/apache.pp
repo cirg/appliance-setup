@@ -1,6 +1,6 @@
 class appliance-components::apache {
-  include apache
-  include apache::mod::ssl
+  include ::apache
+  include ::apache::mod::ssl
 
   file { '/etc/apache2/sites-enabled/default-ssl':
     ensure  => link,

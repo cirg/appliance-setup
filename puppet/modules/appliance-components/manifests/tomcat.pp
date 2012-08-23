@@ -1,3 +1,3 @@
 class appliance-components::tomcat {
-  include tomcat
+  include ::tomcat
 }
