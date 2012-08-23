@@ -1,6 +1,8 @@
 class appliance-components::apache {
   include ::apache
   include ::apache::mod::ssl
+  include ::apache::mod::proxy
+  include ::apache::mod::proxy_http
 
   file { '/etc/apache2/sites-enabled/default-ssl':
     ensure  => link,
