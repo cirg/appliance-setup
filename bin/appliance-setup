@@ -18,11 +18,12 @@ EOF
 install_puppet()
 {
 	if ! dpkg-query -W --showformat='${Status}\n' puppet 2>/dev/null | grep -q "install ok installed"; then
-		cat <<EOF >/etc/apt/sources.list.d/backports.list
-deb http://us.archive.ubuntu.com/ubuntu lucid-backports main
-deb http://us.archive.ubuntu.com/ubuntu lucid-backports universe
+		cat <<EOF >/etc/apt/sources.list.d/puppet.list
+deb http://apt.puppetlabs.com/ lucid main
+deb-src http://apt.puppetlabs.com/ lucid main
 EOF
 
+		apt-key adv --keyserver keyserver.ubuntu.com --recv 4BD6EC30
 		apt-get update
 
 		apt-get -y install puppet
