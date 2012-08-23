@@ -3,7 +3,7 @@ node default {
 
   class { 'java': }
   include appliance-components::mysql
-  class { 'tomcat': }
+  include appliance-components::tomcat
 
   # Additional packages to install
 
