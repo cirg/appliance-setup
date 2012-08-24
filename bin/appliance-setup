@@ -41,7 +41,13 @@ run_puppet_apply()
 
 print_version()
 {
-	git describe --dirty --long --always
+	git_branch=$(git symbolic-ref -q HEAD | sed 's;refs/heads/;;')
+	if [ "$git_branch" = "master" ]; then
+		git describe --dirty --long --always
+	else
+		git_last_tag=$(git describe --abbrev=0)
+		git describe --dirty --long --always | sed "s/$git_last_tag/$git_branch/"
+	fi
 }
 
 
