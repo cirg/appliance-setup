@@ -15,6 +15,15 @@ class appliance-components::apache {
     notify  => Service['httpd'],
   }
 
+  file { '/etc/apache2/conf.d/redirect-ssl.conf':
+    ensure => present,
+    source => 'puppet:///modules/appliance-components/redirect-ssl.conf',
+    require => [
+      Package['httpd'],
+    ],
+    notify  => Service['httpd'],
+  }
+
   package { 'ssl-cert':
     ensure => installed,
   }
