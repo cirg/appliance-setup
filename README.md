@@ -11,6 +11,10 @@ Appliance Setup
         https://github.com/cirg/appliance-setup.git \
         /opt/appliance-setup
 
+   (Optional) Check out a specific version (tag or branch)
+
+    git checkout <tag|branch>
+
 3) Run setup
 
     /opt/appliance-setup/bin/appliance-setup apply
