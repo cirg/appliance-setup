@@ -13,7 +13,7 @@ Appliance Setup
 
    (Optional) Check out a specific version (tag or branch)
 
-    git checkout <tag|branch>
+    cd /opt/appliance-setup && git checkout <tag|branch>
 
 3) Run setup
 
