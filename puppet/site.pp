@@ -8,7 +8,7 @@ node default {
   # Additional packages to install
 
   $packagelist = [
-    'firefox',
+    'iceweasel',
   ]
 
   package { $packagelist:
