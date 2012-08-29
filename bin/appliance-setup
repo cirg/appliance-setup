@@ -55,10 +55,10 @@ script_base_dir=$(cd "$(dirname "$0")"/.. && pwd)
 cd "$script_base_dir"
 
 if [ -n "$1" ]; then
-        command=$1
+	command=$1
 	shift
 else
-        command=apply
+	command=apply
 fi
 
 case "$command" in
