@@ -4,6 +4,7 @@ set -e
 
 BOOTSTRAP_DIR=/var/lib/appliance-setup
 BOOTSTRAP_STAMP_FILE=$BOOTSTRAP_DIR/bootstrap-stamp
+VERSION_FILE=/etc/appliance-setup-version
 
 usage()
 {
@@ -72,7 +73,7 @@ case "$command" in
 apply)
 	bootstrap
 	run_puppet_apply
-	print_version > /etc/appliance-setup-version
+	print_version > "$VERSION_FILE"
 	;;
 bootstrap)
 	# Force a bootstrap
