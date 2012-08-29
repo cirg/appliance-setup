@@ -21,8 +21,8 @@ install_puppet()
 	# http://docs.puppetlabs.com/guides/puppetlabs_package_repositories.html#for-debian-and-ubuntu
 	if ! [ -f /etc/apt/sources.list.d/puppet.list ]; then
 		cat <<EOF >/etc/apt/sources.list.d/puppet.list
-deb http://apt.puppetlabs.com/ lucid main
-deb-src http://apt.puppetlabs.com/ lucid main
+deb http://apt.puppetlabs.com/ squeeze main
+deb-src http://apt.puppetlabs.com/ squeeze main
 EOF
 
 		apt-key adv --keyserver keyserver.ubuntu.com --recv 4BD6EC30
