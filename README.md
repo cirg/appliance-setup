@@ -1,7 +1,7 @@
 Appliance Setup
 ===============
 
-1) Boot TurnKey Core (11.3)
+1) Boot TurnKey Core (12)
 
     http://www.turnkeylinux.org/core
 
