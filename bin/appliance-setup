@@ -2,6 +2,9 @@
 
 set -e
 
+BOOTSTRAP_DIR=/var/lib/appliance-setup
+BOOTSTRAP_STAMP_FILE=$BOOTSTRAP_DIR/bootstrap-stamp
+
 usage()
 {
 cat <<EOF >&2
@@ -15,11 +18,13 @@ version: display repository version
 EOF
 }
 
-install_puppet()
+bootstrap()
 {
-	# Add the Puppetlabs package repository
-	# http://docs.puppetlabs.com/guides/puppetlabs_package_repositories.html#for-debian-and-ubuntu
-	if ! [ -f /etc/apt/sources.list.d/puppet.list ]; then
+	if [ ! -d "$BOOTSTRAP_DIR" ]; then
+		mkdir -p "$BOOTSTRAP_DIR"
+	fi
+
+	if [ ! -f "$BOOTSTRAP_STAMP_FILE" ]; then
 		cat <<EOF >/etc/apt/sources.list.d/puppet.list
 deb http://apt.puppetlabs.com/ squeeze main
 deb-src http://apt.puppetlabs.com/ squeeze main
@@ -27,10 +32,12 @@ EOF
 
 		apt-key adv --keyserver keyserver.ubuntu.com --recv 4BD6EC30
 		apt-get update
+
+		# Install the latest version of Puppet
+		apt-get -y install facter puppet
 	fi
 
-	# Install the latest version of Puppet
-	apt-get -y install facter puppet
+	date > "$BOOTSTRAP_STAMP_FILE"
 }
 
 run_puppet_apply()
@@ -63,9 +70,14 @@ fi
 
 case "$command" in
 apply)
-	install_puppet
+	bootstrap
 	run_puppet_apply
 	print_version > /etc/appliance-setup-version
+	;;
+bootstrap)
+	# Force a bootstrap
+	rm -f "$BOOTSTRAP_STAMP_FILE"
+	bootstrap
 	;;
 help)
 	usage
