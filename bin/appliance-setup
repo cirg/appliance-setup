@@ -35,7 +35,7 @@ EOF
 		apt-get update
 
 		# Install the latest version of Puppet
-		apt-get -y install facter puppet
+		apt-get -y install facter hiera-puppet puppet
 	fi
 
 	date > "$BOOTSTRAP_STAMP_FILE"
