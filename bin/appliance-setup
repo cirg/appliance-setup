@@ -35,7 +35,7 @@ EOF
 		apt-get update
 
 		# Install the latest version of Puppet
-		apt-get -y install facter hiera-puppet puppet
+		apt-get -y install facter hiera-puppet puppet pwgen
 
 		# Create local configuration file
 
