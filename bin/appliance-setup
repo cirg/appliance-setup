@@ -36,6 +36,12 @@ EOF
 
 		# Install the latest version of Puppet
 		apt-get -y install facter hiera-puppet puppet
+
+		# Create local configuration file
+
+		# Ensure file exists and has restrictive permissions
+		touch puppet/etc/hieradb/local.yaml
+		chmod 600 puppet/etc/hieradb/local.yaml
 	fi
 
 	date > "$BOOTSTRAP_STAMP_FILE"
