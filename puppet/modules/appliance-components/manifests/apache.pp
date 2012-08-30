@@ -16,8 +16,8 @@ class appliance-components::apache {
   }
 
   file { '/etc/apache2/conf.d/redirect-ssl.conf':
-    ensure => present,
-    source => 'puppet:///modules/appliance-components/redirect-ssl.conf',
+    ensure  => present,
+    source  => 'puppet:///modules/appliance-components/redirect-ssl.conf',
     require => [
       Package['httpd'],
     ],
