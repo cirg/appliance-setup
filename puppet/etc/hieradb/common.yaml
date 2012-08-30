@@ -1,7 +1,7 @@
 classes:
-  - appliance-components::apache
-  - appliance-components::java
-  - appliance-components::mysql
-  - appliance-components::tomcat
-  - appliance-components::openmrs
+  - appliance_components::apache
+  - appliance_components::java
+  - appliance_components::mysql
+  - appliance_components::tomcat
+  - appliance_components::openmrs
 mysql_root_password: 'UP9aeKas'
