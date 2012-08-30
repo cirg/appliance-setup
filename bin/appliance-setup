@@ -46,6 +46,8 @@ EOF
 		# Add commented out default configuration if local file is empty
 		if [ ! -s puppet/etc/hieradb/local.yaml ]; then
 			sed 's/^/#/' puppet/etc/hieradb/common.yaml > puppet/etc/hieradb/local.yaml
+			# Generate random mysql root password
+			echo "mysql_root_password: $(pwgen -s 10)" >> puppet/etc/hieradb/local.yaml
 		fi
 	fi
 
