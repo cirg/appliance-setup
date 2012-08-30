@@ -4,3 +4,4 @@ classes:
   - appliance-components::mysql
   - appliance-components::tomcat
   - appliance-components::openmrs
+mysql_root_password: 'UP9aeKas'
