@@ -58,7 +58,7 @@ if [ -n "$1" ]; then
 	command=$1
 	shift
 else
-	command=apply
+	command=help
 fi
 
 case "$command" in
