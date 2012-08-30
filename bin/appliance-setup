@@ -42,6 +42,11 @@ EOF
 		# Ensure file exists and has restrictive permissions
 		touch puppet/etc/hieradb/local.yaml
 		chmod 600 puppet/etc/hieradb/local.yaml
+
+		# Add commented out default configuration if local file is empty
+		if [ ! -s puppet/etc/hieradb/local.yaml ]; then
+			sed 's/^/#/' puppet/etc/hieradb/common.yaml > puppet/etc/hieradb/local.yaml
+		fi
 	fi
 
 	date > "$BOOTSTRAP_STAMP_FILE"
