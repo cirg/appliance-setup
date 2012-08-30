@@ -44,7 +44,7 @@ EOF
 run_puppet_apply()
 {
 	cd puppet
-	puppet apply --modulepath=modules --color=false site.pp "$@"
+	puppet apply --confdir etc site.pp "$@"
 }
 
 print_version()
