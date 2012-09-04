@@ -1,0 +1,6 @@
+classes:
+  - appliance-components::apache
+  - appliance-components::java
+  - appliance-components::mysql
+  - appliance-components::tomcat
+  - appliance-components::openmrs
