@@ -12,6 +12,7 @@ class appliance-components::openmrs {
 
   $packagelist = [
     'iceweasel',
+    'maven2',
   ]
 
   package { $packagelist:
