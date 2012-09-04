@@ -8,5 +8,15 @@ class appliance-components::openmrs {
     notify  => Service['httpd'],
   }
 
+  # Additional packages to install
+
+  $packagelist = [
+    'iceweasel',
+  ]
+
+  package { $packagelist:
+    ensure => installed,
+  }
+
   #include ::openmrs
 }
