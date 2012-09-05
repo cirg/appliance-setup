@@ -5,6 +5,7 @@ set -e
 BOOTSTRAP_DIR=/var/lib/appliance-setup
 BOOTSTRAP_STAMP_FILE=$BOOTSTRAP_DIR/bootstrap-stamp
 VERSION_FILE=/etc/appliance-setup-version
+: ${APPLIANCE_COMPONENTS:="openmrs"}
 
 usage()
 {
@@ -46,6 +47,13 @@ EOF
 		# Add commented out default configuration if local file is empty
 		if [ ! -s puppet/etc/hieradb/local.yaml ]; then
 			sed 's/^/#/' puppet/etc/hieradb/common.yaml > puppet/etc/hieradb/local.yaml
+
+			# Add components to local configuration
+			echo "classes:" >> puppet/etc/hieradb/local.yaml
+			for s in $APPLIANCE_COMPONENTS; do
+				echo " - appliance_components::$s" >> puppet/etc/hieradb/local.yaml
+			done
+
 			# Generate random mysql root password
 			echo "mysql_root_password: $(pwgen -s 10)" >> puppet/etc/hieradb/local.yaml
 		fi
