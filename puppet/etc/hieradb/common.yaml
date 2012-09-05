@@ -1,3 +1,2 @@
-classes:
-  - appliance_components::openmrs
+classes: []
 mysql_root_password: 'UP9aeKas'
