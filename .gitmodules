@@ -16,3 +16,6 @@
 [submodule "puppet/modules/apache"]
 	path = puppet/modules/apache
 	url = https://github.com/cirg/puppetlabs-apache.git
+[submodule "puppet/modules/postgresql"]
+	path = puppet/modules/postgresql
+	url = https://github.com/cirg/puppet-postgresql.git
