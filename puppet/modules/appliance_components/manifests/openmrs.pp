@@ -1,3 +1,7 @@
+# Class: appliance_components::openmrs
+#
+# Requires: nothing
+#
 class appliance_components::openmrs {
   include appliance_components::apache
   include appliance_components::mysql

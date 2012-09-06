@@ -1,3 +1,7 @@
+# Class: appliance_components::apache
+#
+# Requires: nothing
+#
 class appliance_components::apache {
   include ::apache
   include ::apache::mod::ssl
