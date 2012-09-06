@@ -1,6 +1,5 @@
 class appliance_components::openmrs {
   include appliance_components::apache
-  include appliance_components::java
   include appliance_components::mysql
   include appliance_components::tomcat
 
