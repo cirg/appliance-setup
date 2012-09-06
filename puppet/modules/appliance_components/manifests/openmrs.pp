@@ -1,6 +1,10 @@
 # Class: appliance_components::openmrs
 #
-# Requires: nothing
+# Requires:
+#
+#  appliance_components::apache
+#  appliance_components::mysql
+#  appliance_components::tomcat
 #
 class appliance_components::openmrs {
   include appliance_components::apache
