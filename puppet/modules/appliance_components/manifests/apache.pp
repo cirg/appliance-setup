@@ -1,5 +1,8 @@
 # Class: appliance_components::apache
 #
+# This class installs and configures Apache. SSL is configured with a
+# self-signed certificate. All traffic is redirected to HTTPS.
+#
 # Requires: nothing
 #
 class appliance_components::apache {
