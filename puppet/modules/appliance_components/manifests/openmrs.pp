@@ -1,5 +1,8 @@
 # Class: appliance_components::openmrs
 #
+# Sets up system for OpenMRS. This proxies all OpenMRS content through
+# Apache (HTTPS). The proxy URL is https://server/openmrs.
+#
 # Requires:
 #
 #  appliance_components::apache
