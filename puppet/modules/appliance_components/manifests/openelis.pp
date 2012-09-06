@@ -1,6 +1,10 @@
 # Class: appliance_components::openelis
 #
-# Requires: nothing
+# Requires:
+#
+#  appliance_components::apache
+#  appliance_components::postgresql
+#  appliance_components::tomcat
 #
 class appliance_components::openelis {
   include appliance_components::apache
