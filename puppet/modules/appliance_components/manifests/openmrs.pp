@@ -14,9 +14,9 @@ class appliance_components::openmrs {
   include appliance_components::mysql
   include appliance_components::tomcat
 
-  file { '/etc/apache2/conf.d/openmrs-proxy.conf':
+  file { '/etc/apache2/conf.d/openmrs.conf':
     ensure  => present,
-    source  => 'puppet:///modules/appliance_components/openmrs-proxy.conf',
+    source  => 'puppet:///modules/appliance_components/openmrs.conf',
     require => [
       Package['httpd'],
     ],
