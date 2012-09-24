@@ -10,6 +10,7 @@ class appliance_components::apache {
   include ::apache::mod::ssl
   include ::apache::mod::proxy
   include ::apache::mod::proxy_http
+  apache::mod { 'proxy_ajp': }
   apache::mod { 'rewrite': }
 
   file { '/etc/apache2/sites-enabled/default-ssl':
