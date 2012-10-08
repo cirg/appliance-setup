@@ -18,7 +18,7 @@ Quick Start
 
 3.  Run setup
 
-        APPLIANCE_COMPONENTS="openmrs" /opt/appliance-setup/bin/appliance-setup apply
+        APPLIANCE_COMPONENTS="kenyaemr" /opt/appliance-setup/bin/appliance-setup apply
 
     Look at the files under
     `puppet/modules/appliance_components/manifests` for available

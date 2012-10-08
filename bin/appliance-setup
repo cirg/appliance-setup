@@ -5,7 +5,7 @@ set -e
 BOOTSTRAP_DIR=/var/lib/appliance-setup
 BOOTSTRAP_STAMP_FILE=$BOOTSTRAP_DIR/bootstrap-stamp
 VERSION_FILE=/etc/appliance-setup-version
-: ${APPLIANCE_COMPONENTS:="openmrs"}
+: ${APPLIANCE_COMPONENTS:="kenyaemr"}
 
 usage()
 {
