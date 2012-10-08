@@ -1,6 +1,6 @@
-# Class: appliance_components::openmrs
+# Class: appliance_components::kenyaemr
 #
-# Sets up system for OpenMRS. This proxies all OpenMRS content through
+# Sets up system for KenyaEMR. This proxies all OpenMRS content through
 # Apache (HTTPS). The proxy URL is https://server/openmrs.
 #
 # Requires:
@@ -9,7 +9,7 @@
 #  appliance_components::mysql
 #  appliance_components::tomcat
 #
-class appliance_components::openmrs {
+class appliance_components::kenyaemr {
   include appliance_components::apache
   include appliance_components::mysql
   include appliance_components::tomcat
