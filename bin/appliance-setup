@@ -62,10 +62,23 @@ EOF
 	date > "$BOOTSTRAP_STAMP_FILE"
 }
 
+run_puppet()
+{
+	if [ $# -eq 0 ]; then
+		echo "Command is required"
+		exit 1
+	fi
+
+	command=$1
+	shift
+
+	cd puppet
+	puppet $command --confdir etc "$@"
+}
+
 run_puppet_apply()
 {
-	cd puppet
-	puppet apply --confdir etc site.pp "$@"
+	run_puppet apply site.pp
 }
 
 print_version()
@@ -98,7 +111,7 @@ help)
 	usage
 	;;
 puppet)
-	run_puppet_apply "$@"
+	run_puppet "$@"
 	;;
 update)
 	git fetch
