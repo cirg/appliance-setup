@@ -79,7 +79,6 @@ print_version()
 	fi
 }
 
-
 script_base_dir=$(cd "$(dirname "$0")"/.. && pwd)
 cd "$script_base_dir"
 
