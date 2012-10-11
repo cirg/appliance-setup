@@ -1,8 +1,9 @@
 ---
-:backends:
+:backend:
   - yaml
 :hierarchy:
   - local
   - common
+
 :yaml:
   :datadir: etc/hieradb
