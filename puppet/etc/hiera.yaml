@@ -3,7 +3,7 @@
   - yaml
 :hierarchy:
   - local
-  - common
+  - global
 
 :yaml:
   :datadir: etc/hieradb

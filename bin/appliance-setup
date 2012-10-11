@@ -46,7 +46,7 @@ EOF
 
 		# Add commented out default configuration if local file is empty
 		if [ ! -s puppet/etc/hieradb/local.yaml ]; then
-			sed 's/^/#/' puppet/etc/hieradb/common.yaml > puppet/etc/hieradb/local.yaml
+			sed 's/^/#/' puppet/etc/hieradb/global.yaml > puppet/etc/hieradb/local.yaml
 
 			# Add components to local configuration
 			echo "classes:" >> puppet/etc/hieradb/local.yaml
