@@ -62,6 +62,12 @@ EOF
 	date > "$BOOTSTRAP_STAMP_FILE"
 }
 
+run_hiera()
+{
+	cd puppet
+	hiera --config etc/hiera.yaml "$@"
+}
+
 run_puppet()
 {
 	if [ $# -eq 0 ]; then
@@ -109,6 +115,9 @@ bootstrap)
 	;;
 help)
 	usage
+	;;
+hiera)
+	run_hiera "$@"
 	;;
 puppet)
 	run_puppet "$@"
