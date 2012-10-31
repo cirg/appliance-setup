@@ -1,135 +1,305 @@
-#!/bin/sh
+#!/usr/bin/env python
+import datetime
+import errno
+import getopt  # argparse is preferable, but not avail in base
+import glob
+import os
+import shlex
+import stat
+import subprocess
+import sys
 
-set -e
+BOOTSTRAP_DIR = '/var/lib/appliance-setup'
+BOOTSTRAP_STAMP_FILE = os.path.join(BOOTSTRAP_DIR, 'bootstrap-stamp')
+VERSION_FILE = '/etc/appliance-setup-version'
+APPLIANCE_COMPONENTS = os.environ['APPLIANCE_COMPONENTS'] if\
+    'APPLIANCE_COMPONENTS' in os.environ else ''
 
-BOOTSTRAP_DIR=/var/lib/appliance-setup
-BOOTSTRAP_STAMP_FILE=$BOOTSTRAP_DIR/bootstrap-stamp
-VERSION_FILE=/etc/appliance-setup-version
-: ${APPLIANCE_COMPONENTS:="kenyaemr"}
+usage = """
+Usage: %s [OPTION...] <command>
 
-usage()
-{
-cat <<EOF >&2
-usage: $0 <command>
+Options:
+-h --help     display usage information
+-v --verbose  provide verbose output
 
-Commands
-apply:   configure the appliance
-help:    display usage information
-update:  fetch the latest version of the appliance-setup repository
-version: display repository version
-EOF
-}
+Commands:
+apply         configure the appliance
+list          list available components
+update        fetch the latest version of the appliance-setup repository
+version       display repository version
 
-bootstrap()
-{
-	if [ ! -d "$BOOTSTRAP_DIR" ]; then
-		mkdir -p "$BOOTSTRAP_DIR"
-	fi
+The value of environment variable APPLIANCE_COMPONENTS determines
+which component or components to configure and install.  Changes to
+this value in subsequent runs will result in the previous and new
+being merged into the local.yaml configuration file.
+""" % sys.argv[0]
 
-	if [ ! -f "$BOOTSTRAP_STAMP_FILE" ]; then
-		cat <<EOF >/etc/apt/sources.list.d/puppetlabs.list
-deb http://apt.puppetlabs.com/ squeeze main
-deb-src http://apt.puppetlabs.com/ squeeze main
-EOF
+def bootstrap(force=False):
+    """bootstrap the process
 
-		apt-key adv --keyserver keyserver.ubuntu.com --recv 4BD6EC30
-		apt-get update
+    :param force: set to Force an update - removes the marker file
 
-		# Install the latest version of Puppet
-		apt-get -y install facter puppet pwgen
+    A prerequisite to applying a configuration to the appliance.
+    Installs any prerequisite packages (those needed for appliance
+    setup not known to exist in the turnkey base image).
 
-		# Create local configuration file
+    NB - force=True will re-create the custom sources file and run the apt
+    commands, but the local config file is persisted to preserve any
+    generated passwords.  See local_config() for more detail.
 
-		# Ensure file exists and has restrictive permissions
-		touch puppet/etc/hieradb/local.yaml
-		chmod 600 puppet/etc/hieradb/local.yaml
+    """
+    if force:
+        try:
+            os.remove(BOOTSTRAP_STAMP_FILE)
+        except OSError, e:
+            if e.errno != errno.ENOENT:  #ignore missing file
+                raise
 
-		# Add commented out default configuration if local file is empty
-		if [ ! -s puppet/etc/hieradb/local.yaml ]; then
-			sed 's/^/#/' puppet/etc/hieradb/global.yaml > puppet/etc/hieradb/local.yaml
+    if not os.path.exists(BOOTSTRAP_DIR):
+        os.makedirs(BOOTSTRAP_DIR)
 
-			# Add components to local configuration
-			echo "classes:" >> puppet/etc/hieradb/local.yaml
-			for s in $APPLIANCE_COMPONENTS; do
-				echo " - appliance_components::$s" >> puppet/etc/hieradb/local.yaml
-			done
+    if not os.path.exists(BOOTSTRAP_STAMP_FILE):
+        with open('/etc/apt/sources.list.d/puppetlabs.list', 'w') as \
+            apt_sources:
+            apt_sources.write("""deb http://apt.puppetlabs.com/ squeeze main
+deb-src http://apt.puppetlabs.com/ squeeze main""")
 
-			# Generate random mysql root password
-			echo "mysql_root_password: $(pwgen -s 10)" >> puppet/etc/hieradb/local.yaml
-		fi
-	fi
+        subprocess.check_call(shlex.split(
+            'apt-key adv --keyserver keyserver.ubuntu.com --recv 4BD6EC30'))
+        subprocess.check_call(shlex.split('apt-get update'))
 
-	date > "$BOOTSTRAP_STAMP_FILE"
-}
+        # Install the latest version of Puppet
+        subprocess.check_call(shlex.split(
+            'apt-get -y install facter puppet pwgen python-yaml'))
 
-run_hiera()
-{
-	cd puppet
-	hiera --config etc/hiera.yaml "$@"
-}
+        with open(BOOTSTRAP_STAMP_FILE, 'w') as stamp_file:
+            stamp_file.write(datetime.datetime.now().isoformat() +
+            '\n')
 
-run_puppet()
-{
-	if [ $# -eq 0 ]; then
-		echo "Command is required"
-		exit 1
-	fi
+def local_config():
+    """manages `local.yaml`, the local config file fed to puppet
 
-	command=$1
-	shift
+    Generates the local configuration file if necessary, merging any
+    APPLIANCE_COMPONENTS values with the existing set found.
 
-	cd puppet
-	puppet $command --confdir etc "$@"
-}
+    NB Care is also taken to not modify existing generated passwords.
+    Delete from local.yaml to force a change.
+    
+    """
+    # (python-yaml, brought in by bootstrap, should now be available)
+    import yaml
 
-run_puppet_apply()
-{
-	run_puppet apply site.pp
-}
+    # The local and global configuration files
+    lcf = os.path.join(script_base_dir,
+                       'puppet/etc/hieradb/local.yaml')
+    gcf = os.path.join(script_base_dir,
+                               'puppet/etc/hieradb/global.yaml')
 
-print_version()
-{
-	git describe --dirty
-}
+    # Ensure local config file exists and has restrictive permissions
+    subprocess.check_call(['touch', lcf]) 
+    os.chmod(lcf, stat.S_IREAD | stat.S_IWRITE)
 
-script_base_dir=$(cd "$(dirname "$0")"/.. && pwd)
-cd "$script_base_dir"
+    # Pull in the existing local configuration (if found) for merge
+    with open(lcf, 'r') as local_config:
+        config = yaml.load(local_config.read())
 
-if [ -n "$1" ]; then
-	command=$1
-	shift
-else
-	command=help
-fi
+    if not config:
+        config = {'classes': []}
+    for s in APPLIANCE_COMPONENTS.split():
+        available_components(component=s)
+        namespace_component = 'appliance_components::%s' % s
+        if namespace_component not in config['classes']:
+            config['classes'].append(namespace_component)
 
-case "$command" in
-apply)
-	bootstrap
-	run_puppet_apply
-	print_version > "$VERSION_FILE"
-	;;
-bootstrap)
-	# Force a bootstrap
-	rm -f "$BOOTSTRAP_STAMP_FILE"
-	bootstrap
-	;;
-help)
-	usage
-	;;
-hiera)
-	run_hiera "$@"
-	;;
-puppet)
-	run_puppet "$@"
-	;;
-update)
-	git fetch
-	git reset --hard @{u}
-	git submodule update --init
-	;;
-version)
-	print_version
-	;;
-*)
-	echo "Invalid command: $command"
-esac
+    # Require at least one component to go on
+    if not len(config['classes']):
+        available_components(require_one=True)
+
+    # See if a password exists before overwritting
+    if 'mysql_root_password' not in config:
+        pwgen = subprocess.Popen(shlex.split('pwgen -s 10 -n1'),
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE)
+        pw, err = pwgen.communicate()
+        status = pwgen.wait()
+        if status:
+            exit(error=err, status=status)
+        config['mysql_root_password'] = pw.strip()
+
+    # YAML comments are lost during parsing.  Prepend the default
+    # configuration as a comment regardless.
+    with open(lcf, 'w') as local_config:
+        with open(gcf, 'r') as global_config:
+            for i in global_config.readlines():
+                local_config.write('#%s' % i)
+
+        # now write out the merged configuration
+        local_config.write(yaml.dump(config,
+                                     default_flow_style=False))
+
+def available_components(component=None, require_one=False):
+    """Lookup given name or generate available list of components
+
+    :param require_one: generates error for missing component case
+    :param component: set to component name to validate.  if set and not
+      found, program aborts with user feedback.
+
+    Validates the named component or terminates if a component is
+    requested.  Otherwise, a pretty list of the available components
+    are generated on stdout.
+
+    """
+    dir = os.path.join(script_base_dir,
+                       'puppet/modules/appliance_components/manifests')
+    # remove the path and *.pp ending
+    puppet_components = [os.path.basename(m)[:-3] for m in glob.glob('%s/*.pp' % dir)]
+
+    if component:
+        if component not in puppet_components:
+            puppet_components.insert(0, '%s not found in:' % component)
+            error = '\n - '.join(puppet_components)
+            exit(error=error, status=2, show_usage=False)
+    elif require_one:
+        puppet_components.insert(0, 'set APPLIANCE_COMPONENTS to at '\
+                                 'lease one of:')
+        error = '\n - '.join(puppet_components)
+        exit(error=error, status=2, show_usage=False)
+    else:
+        puppet_components.insert(0, 'Available components:')
+        print '\n - '.join(puppet_components)
+
+def run_hiera(args):
+    hiera = subprocess.Popen(shlex.split(\
+        'hiera --config etc/hiera.yaml %s' % ' '.join([s for s in args])),
+        cwd=os.path.join(script_base_dir, 'puppet'),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE)
+    out, err = hiera.communicate()
+    if out:
+        print out
+    if err:
+        print >> sys.stderr, err
+    sys.exit(hiera.wait())
+
+def run_puppet(args):
+    if len(args) == 0:
+        exit(error="Command is required", status=1)
+
+    invocation = 'puppet %s --confdir etc %s' %\
+        (args[0], ' '.join(args[1:]) if
+        len(args) > 1 else '')
+    puppet = subprocess.Popen(shlex.split(invocation),
+                              cwd=os.path.join(script_base_dir, 'puppet'),
+                              stdout=subprocess.PIPE,
+                              stderr=subprocess.PIPE)
+    out, err = puppet.communicate()
+    if out:
+        print out
+    if err:
+        print >> sys.stderr, err
+    status = puppet.wait()
+    if status:
+        sys.exit(status)
+
+def run_puppet_apply():
+    run_puppet(['apply', 'site.pp'])
+    
+def print_version(output=sys.stdout):
+    """obtain git version information and write to output
+
+    :param output: provide a filename or write ready filehandle to
+      receive the version data.  defaults to stdout
+
+    """
+
+    git_proc = subprocess.Popen(shlex.split('git describe --dirty'),
+                                cwd=script_base_dir,
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+    out, err = git_proc.communicate()
+    status = git_proc.wait()
+    if status or err:
+        print >> sys.stderr, err
+        sys.exit(status)
+
+    version = out.replace('refs/heads/','').strip()
+    if not isinstance(output, file):
+        with open(output, 'w') as output:
+            print >> output, version
+    else:
+        print >> output, version
+
+def update():
+    cmds = ('git fetch',
+            'git reset --hard @{u}',
+            'git submodule update --init')
+
+    for cmd in cmds:
+        git_proc = subprocess.Popen(shlex.split(cmd),
+                                    cwd=script_base_dir,
+                                    stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE)
+        out, err = git_proc.communicate()
+        status = git_proc.wait()
+        if status or err:
+            print >> sys.stderr, err
+            sys.exit(status)
+        if out.strip():
+            print out
+
+def exit(error=None, status=0, show_usage=True):
+    """Display usage and optional error, then terminate program
+
+    :param status: integer value return to the parent shell
+    :param text: any additional message prepended to usage.
+    :param show_usage: should usage also be displayed.
+
+    Usage and optional error text is written to stderr before
+    terminating the program with the exit status.
+
+    """
+    if error:
+        print >> sys.stderr, 'Error: %s' % error
+    if show_usage:
+        print >> sys.stderr, usage
+    sys.exit(status)
+
+script_base_dir = os.path.join(os.path.dirname(__file__), '..')
+if __name__ == "__main__":
+    try:
+        options, args = getopt.getopt(sys.argv[1:], 'hv', ['help',
+                                                           'verbose'])
+    except getopt.GetoptError, err:
+        exit(error=str(err), status=2)
+
+    optkeys = [k for k,v in options]
+
+    global verbose  # use file scope variable, don't create a local
+    verbose = '-v' in optkeys
+
+    if '-h' in options or '--help' in options:
+        exit()
+    if len(args) < 1:
+        exit(error="<command> not found", status=2)
+
+    arg = args.pop(0)
+    if arg == 'apply':
+        bootstrap()
+        local_config()
+        run_puppet_apply()
+        print_version(VERSION_FILE)
+    elif arg == 'bootstrap':
+        bootstrap(force=True)
+        local_config()
+    elif arg == 'hiera':
+        run_hiera(args)
+    elif arg == 'list':
+        available_components()
+    elif arg == 'puppet':
+        run_puppet(args)
+    elif arg == 'update':
+        update()
+    elif arg == 'version':
+        print_version()
+    else:
+        exit(error="Invalid command: %s" % arg, status=2)
