@@ -1,0 +1,46 @@
+#!/bin/sh
+
+# appliance-setup test
+
+# Exit on any failed commands
+set -e
+
+# Run from outside the appliace-setup directory
+cd /root
+
+echo "Running apply"
+APPLIANCE_COMPONENTS="kenyaemr" /opt/appliance-setup/bin/appliance-setup apply
+
+echo "Checking if bootstrap stamp file was created"
+[ -f /var/lib/appliance-setup/bootstrap-stamp ]
+
+# TODO: test bootstrap
+
+echo "Running hiera command"
+/opt/appliance-setup/bin/appliance-setup hiera classes
+
+echo "Running puppet command"
+/opt/appliance-setup/bin/appliance-setup puppet apply --noop site.pp
+
+echo "Running version command"
+/opt/appliance-setup/bin/appliance-setup version
+
+# The update command may change the repository we are testing
+echo "Running update command"
+/opt/appliance-setup/bin/appliance-setup update
+
+echo "Checking if https://localhost responds"
+wget -O /dev/null --no-check-certificate https://localhost ||
+case ${exit_status:=$?} in
+8)
+	# An exit status code of 8 means the server returned an HTTP
+	# error response (e.g. 404). Consider a response like this to
+	# be a success.
+	:
+	;;
+*)
+	exit $exit_status
+	;;
+esac
+
+echo "Finished tests"
