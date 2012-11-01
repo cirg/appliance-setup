@@ -169,8 +169,10 @@ def available_components(component=None, require_one=False):
         print '\n - '.join(puppet_components)
 
 def run_hiera(args):
-    hiera = subprocess.Popen(shlex.split(\
-        'hiera --config etc/hiera.yaml %s' % ' '.join([s for s in args])),
+    # Add hiera command and --config flag to args
+    args[:0] = ['hiera', '--config', 'etc/hiera.yaml']
+
+    hiera = subprocess.Popen(args,
         cwd=os.path.join(script_base_dir, 'puppet'),
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE)
@@ -185,10 +187,11 @@ def run_puppet(args):
     if len(args) == 0:
         exit(error="Command is required", status=1)
 
-    invocation = 'puppet %s --confdir etc %s' %\
-        (args[0], ' '.join(args[1:]) if
-        len(args) > 1 else '')
-    puppet = subprocess.Popen(shlex.split(invocation),
+    # Add puppet command and --confdir flag to args
+    args[:0] = ['puppet']
+    args[2:2] = ['--confdir', 'etc']
+    
+    puppet = subprocess.Popen(args,
                               cwd=os.path.join(script_base_dir, 'puppet'),
                               stdout=subprocess.PIPE,
                               stderr=subprocess.PIPE)
