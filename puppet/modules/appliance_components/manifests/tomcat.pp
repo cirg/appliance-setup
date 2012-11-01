@@ -4,9 +4,5 @@
 #
 class appliance_components::tomcat {
   include appliance_components::java
-
-  class { '::tomcat':
-    disable_authentication => true,
-    enable_ajp             => true,
-  }
+  include ::tomcat
 }
