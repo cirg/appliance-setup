@@ -1,2 +1,5 @@
 classes: []
 mysql_root_password: 'UP9aeKas'
+# Add Tomcat Java options recommended by OpenMRS
+# https://wiki.openmrs.org/display/docs/Troubleshooting+Memory+Errors
+'tomcat::java_opts_extra': '-Xmx512m -Xms512m -XX:PermSize=256m -XX:MaxPermSize=256m -XX:NewSize=128m'
