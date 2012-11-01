@@ -1,5 +1,4 @@
 classes: []
-mysql_root_password: 'UP9aeKas'
 'tomcat::disable_authentication': true
 'tomcat::enable_ajp': true
 # Add Tomcat Java options recommended by OpenMRS
