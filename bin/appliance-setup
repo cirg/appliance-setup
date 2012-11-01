@@ -116,7 +116,7 @@ def local_config():
         available_components(require_one=True)
 
     # See if a password exists before overwritting
-    if 'mysql_root_password' not in config:
+    if 'mysql::server::config_hash' not in config:
         pwgen = subprocess.Popen(shlex.split('pwgen -s 10 -n1'),
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE)
@@ -124,7 +124,7 @@ def local_config():
         status = pwgen.wait()
         if status:
             exit(error=err, status=status)
-        config['mysql_root_password'] = pw.strip()
+        config['mysql::server::config_hash'] = {'root_password': pw.strip()}
 
     # YAML comments are lost during parsing.  Prepend the default
     # configuration as a comment regardless.
