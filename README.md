@@ -37,7 +37,9 @@ Quick Start
 
    (Optional) Check out a specific version (tag or branch)
 
-        cd /opt/appliance-setup && git checkout <tag|branch>
+        cd /opt/appliance-setup &&
+        git checkout <tag|branch> &&
+        git submodule update
 
 3.  Run setup
 
