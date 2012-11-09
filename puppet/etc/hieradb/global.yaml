@@ -1,4 +1,5 @@
 classes: []
+tomcat::create_legacy_symlinks: true
 tomcat::disable_authentication: true
 tomcat::enable_ajp: true
 # Add Tomcat Java options recommended by OpenMRS
