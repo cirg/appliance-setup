@@ -3,6 +3,7 @@
 # Requires: nothing
 #
 class appliance_components::postgresql {
+  include ::locales
   include ::postgresql::server
 
   # Additional packages to install
