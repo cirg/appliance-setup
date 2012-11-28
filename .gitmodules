@@ -22,3 +22,6 @@
 [submodule "puppet/modules/tomcat"]
 	path = puppet/modules/tomcat
 	url = https://github.com/cirg/cirg-tomcat.git
+[submodule "puppet/modules/locales"]
+	path = puppet/modules/locales
+	url = https://github.com/cirg/puppet-module-locales.git
