@@ -193,13 +193,8 @@ def run_puppet(args):
     
     puppet = subprocess.Popen(args,
                               cwd=os.path.join(script_base_dir, 'puppet'),
-                              stdout=subprocess.PIPE,
-                              stderr=subprocess.PIPE)
-    out, err = puppet.communicate()
-    if out:
-        print out
-    if err:
-        print >> sys.stderr, err
+                              stdout=None,
+                              stderr=None)
     status = puppet.wait()
     if status:
         sys.exit(status)
