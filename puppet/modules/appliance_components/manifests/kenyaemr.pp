@@ -33,5 +33,6 @@ class appliance_components::kenyaemr {
     ensure => installed,
   }
 
-  #include ::openmrs
+  include ::openmrs
+  Class['::appliance_components::tomcat'] -> Class['::openmrs']
 }
