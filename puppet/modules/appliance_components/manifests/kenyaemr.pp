@@ -33,5 +33,5 @@ class appliance_components::kenyaemr {
     ensure => installed,
   }
 
-  #include ::openmrs
+  include ::openmrs
 }
