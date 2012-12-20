@@ -34,4 +34,5 @@ class appliance_components::kenyaemr {
   }
 
   include ::openmrs
+  Class['::appliance_components::tomcat'] -> Class['::openmrs']
 }
