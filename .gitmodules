@@ -31,3 +31,6 @@
 [submodule "puppet/modules/pump"]
 	path = puppet/modules/pump
 	url = http://github.com/cirg/puppet-pump
+[submodule "puppet/modules/exim"]
+	path = puppet/modules/exim
+	url = http://github.com/cirg/puppet-exim
