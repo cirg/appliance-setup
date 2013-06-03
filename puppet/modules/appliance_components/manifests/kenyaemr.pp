@@ -13,6 +13,8 @@ class appliance_components::kenyaemr {
   include appliance_components::apache
   include appliance_components::mysql
   include appliance_components::tomcat
+  include exim
+  include pump
 
   file { '/etc/apache2/conf.d/openmrs.conf':
     ensure  => present,
