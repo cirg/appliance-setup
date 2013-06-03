@@ -62,8 +62,8 @@ def bootstrap(force=False):
         with open('/etc/apt/sources.list.d/puppetlabs.list', 'w') as \
             apt_sources:
             apt_sources.write("""deb http://apt.puppetlabs.com/ squeeze main
-deb-src http://apt.puppetlabs.com/ squeeze main""")
-
+deb-src http://apt.puppetlabs.com/ squeeze main\n""")
+            apt_sources.write("""deb http://apt.puppetlabs.com precise dependencies\n""")
         subprocess.check_call(shlex.split(
             'apt-key adv --keyserver keyserver.ubuntu.com --recv 4BD6EC30'))
         subprocess.check_call(shlex.split('apt-get update'))
